@@ -1,0 +1,40 @@
+Classes for Project
+Main Class
+Displays messages to players 
+•	Displays welcome
+•	Asks how many players will be playing
+•	Makes calls to other classes throughout the game
+•	Displays goodbye message
+Board Class
+Displays the board and keeps track of any changes done to the board.
+•	Displays board spaces
+•	Displays how many spaces are:
+	Not sold
+	Sold
+	Have houses (how many?)
+	Have hotels (how many?)
+	Mortgaged
+•	Displays player’s location on board
+•	Displays which player owns which space
+House Class
+Manages how many houses/hotels are left.
+•	Manages how many houses are available to give to player
+•	Manages how many hotels are available to give to player
+Money Class
+Manages money transactions.
+•	Gives money to players
+•	Gives money to players when player receives money unless it’s from another player
+•	Takes money from players when player loses money unless it’s meant for another player
+Player Class
+Manages various aspects dealing with a player.
+•	Total money a player has
+•	Which spaces the player owns
+•	Where the player is on the board
+•	If the player is in jail
+•	How many railroads the player owns
+•	How many utilities the player owns
+CommunityChance Class
+Makes Community Chest and Chance Cards and displays them to player.
+•	Makes cards and randomizes order
+•	Displays next card in queue for player
+•	Keeps track of which cards are unavailable and which are not
