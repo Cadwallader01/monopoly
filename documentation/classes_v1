@@ -9,11 +9,11 @@ Board Class
 Displays the board and keeps track of any changes done to the board.
 •	Displays board spaces
 •	Displays how many spaces are:
-	Not sold
-	Sold
-	Have houses (how many?)
-	Have hotels (how many?)
-	Mortgaged
+  	-Not sold
+    -Sold
+    -Have houses (how many?)
+    -Have hotels (how many?)
+    -Mortgaged
 •	Displays player’s location on board
 •	Displays which player owns which space
 House Class
