@@ -10,7 +10,6 @@ public:
 	gameBoard(string, int, int, bool);
 	~gameBoard();
 
-
 	void setSquareName(string);
 	string getSquareName();
 
@@ -26,6 +25,7 @@ public:
 	bool getSquareOwned();
 
 private:
+	int square;
 	string squareName;
 	int squareCost;
 	//int house;
