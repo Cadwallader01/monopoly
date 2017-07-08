@@ -8,14 +8,16 @@ class player
 public:
 	player();
 	~player();
+
 	void setName(string);
 	string getName();
 
-	void setMoney(int);	//setter
-	int getMoney();		//getter
+	void addMoney(int);
+	void subMoney(int);
+	int getMoney();		
 
-	void setutilityCount(int);
-	int getutilityCount();
+	void setutilityCount(int);	//setter
+	int getutilityCount();		//getter
 
 	void setrailroadCount(int);
 	int getrailroadCount();
