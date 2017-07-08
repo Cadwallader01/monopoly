@@ -21,9 +21,15 @@ string player::getName()
 {
 	return name;
 }
-void player::setMoney(int m)
+	void addMoney(int);
+	void subMoney(int);
+void player::addMoney(int m)
 {
-	money = m;
+	money += m;
+}
+void player::subMoney(int m)
+{
+	money -= m;
 }
 int player::getMoney()
 {
