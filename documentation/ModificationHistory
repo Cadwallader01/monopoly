@@ -1,0 +1,13 @@
+Modification History
+This modification document is to help me see how progress continues throughout the program.
+Date	    Details	
+07.06.17	Made github readMe file and drafted ideas for classes
+07.07.17	Created a main.cpp, player.cpp, and player.h
+07.08.17	Created gameBoard.cpp and gameBoard.h to hold a temporary board-the first 1-12 squares of a completed board.
+07.09.17	CommunityChanceClass - Decided this class should be separated and the cards should be declared inside the
+          class and called in main.
+07.10.17	CommunityCards Class - Trying to figure out how to store contents of the card as well as how much they add/subtract
+          in money in one place such as array and vector. Then I want to make this array or vector in Community Class but call 
+          and mess with it in main.
+07.11.17	CommunityCards Class - Working on how to initialize vector or array of objects in a class then call it in main.
+		
