@@ -11,4 +11,7 @@ Date	   	Details
           	in money in one place such as array and vector. Then I want to make this array or vector in Community Class but call 
           	and mess with it in main.
 07.11.17	CommunityCards Class - Working on how to initialize vector or array of objects in a class then call it in main.
+07.12.17	gameBoard Class, player Class, and main.cpp - Rewrote initialization of gameBoard and player objects in main to be 
+		vectors and to be done in functions. Added these functions in main.cpp for calling. Lastly I wrote a dice function 
+		in main.
 		
