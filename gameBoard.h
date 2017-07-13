@@ -31,7 +31,6 @@ private:
 	//int house;
 	int squareRent;
 	bool squareOwned;
-
 };
 
 #endif
