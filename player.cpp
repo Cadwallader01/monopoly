@@ -10,6 +10,14 @@ player::player()
 	railroadCount = 0;
 	jailTime = 0;
 }
+player::player(string n, int m, int u, int rail, int jail)
+{
+	name = n;
+	money = m;
+	utilityCount = u;
+	railroadCount = rail;
+	jailTime = jail;
+}
 player::~player()
 {
 }
