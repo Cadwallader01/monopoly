@@ -7,6 +7,7 @@ class player
 {
 public:
 	player();
+	player(string, int, int, int, int);
 	~player();
 
 	void setName(string);
