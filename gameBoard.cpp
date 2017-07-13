@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 
+int const numOfSquares = 12;
+gameBoard *squares = new gameBoard[numOfSquares];
 
 gameBoard::gameBoard()
 {
@@ -11,12 +13,12 @@ gameBoard::gameBoard()
 	int squareRent = 0;
 	bool squareOwned = false;
 }
-gameBoard::gameBoard(string s, int c, int r, bool o)
+gameBoard::gameBoard(string n, int c, int r, bool o)
 {
-	squareName = s;
+	squareName = n;
 	squareCost = c;
 	squareRent = r;
-	squareOwned = false;
+	squareOwned = o;
 }
 gameBoard::~gameBoard()
 {
