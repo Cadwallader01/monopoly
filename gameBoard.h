@@ -7,8 +7,11 @@ class gameBoard
 {
 public:
 	gameBoard();
-	gameBoard(string, int, int, bool);
+	gameBoard(int, string, int, int, bool, int);
 	~gameBoard();
+
+	void setMonopoly(int);
+	int getMonopoly();
 
 	void setSquareName(string);
 	string getSquareName();
@@ -24,13 +27,17 @@ public:
 	void setSquareOwned(bool);
 	bool getSquareOwned();
 
+	void setOwnedBy(int);
+	int getOwnedBy();
+
 private:
-	int square;
+	int monopoly;
 	string squareName;
 	int squareCost;
 	//int house;
 	int squareRent;
 	bool squareOwned;
+	int ownedBy;
 };
 
 #endif
