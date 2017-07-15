@@ -14,6 +14,7 @@ int diceRoll();
 void makePurchase(int, int, vector<gameBoard>&, vector<player>&);
 void makePlayer(vector<player>&);
 void displayPlayer(vector<player>&);
+string findOwner(int, vector<player>&);
 void makeCommunityCards(vector<CommunityCards>&);
 void displayCommunityCards(vector<CommunityCards>&);
 void makeBoard(vector<gameBoard>&);
@@ -85,9 +86,6 @@ int main(){
 		cout << "You landed on: " << boardSquare[roll].getSquareName() << endl;
 	//	if (boardSquare[roll].getSquareName() == "Community Chest")
 	//		cout << "YOU ARE IN COMMUNITY CARDS+++++++++++++" << endl;
-
-
-		//asks player if they would like to purchase square landed on if available
 		makePurchase(roll, currentPlayer, boardSquare, players);
 	}
 
@@ -98,9 +96,12 @@ int main(){
 }
 void makePurchase(int square, int currentPlayer, vector<gameBoard>& boardSquare, vector<player>& players)
 {
+	string owner = " ";
 	string userInput;
 	int cost = 0;
-	if ((boardSquare[square].getSquareCost()) > 0)
+	int playerToken = -1;
+	//if square is not owned ask player if they'd like to make a purchase
+	if (boardSquare[square].getOwnedBy() == -1)
 	{
 		cout << players[currentPlayer].getName() << " it's available to buy! Would you like to purchase for $" 
 			 << boardSquare[square].getSquareCost() << "?" << endl;
@@ -110,6 +111,8 @@ void makePurchase(int square, int currentPlayer, vector<gameBoard>& boardSquare,
 		{
 			cost = boardSquare[square].getSquareCost();
 			players[currentPlayer].subMoney(cost);
+			playerToken = players[currentPlayer].getToken();
+			boardSquare[square].setOwnedBy(playerToken);
 			cout << "Great! You now own " << boardSquare[square].getSquareName() << "!" << endl;
 			cout << players[currentPlayer].getName() << " your new balance is $"
 				 << players[currentPlayer].getMoney() << endl;
@@ -117,6 +120,20 @@ void makePurchase(int square, int currentPlayer, vector<gameBoard>& boardSquare,
 		else if (userInput == "n")
 		{
 			cout << "Okay no purchase has been made!" << endl;
+		}
+	}
+	//if square is owned let player know who already owns it
+	else if (boardSquare[square].getOwnedBy() > -1)
+	{
+		playerToken = boardSquare[square].getOwnedBy();
+		owner = findOwner(playerToken, players);
+		if (players[currentPlayer].getName() == owner)
+		{
+			cout << "Sorry the square is already owned by you!" << endl;
+		}
+		else
+		{
+			cout << "Sorry the square is already owned by " << owner << endl;
 		}
 	}
 }
@@ -145,6 +162,7 @@ int diceRoll()
 }
 void makePlayer(vector<player>& players)
 {
+	int playerToken = 0;
 	int amountOfPlayers = 0;
 	string name;
 	cout << "How many players will be playing 1-2?: ";
@@ -154,7 +172,8 @@ void makePlayer(vector<player>& players)
 	{
 		cout << "What is name of player " << i+1 << "? ";
 		cin >> name;
-		players.push_back(player(name, 1500, 0, 0, 0));
+		players.push_back(player(playerToken, name, 1500, 0, 0, 0));
+		playerToken++;
 	}
 }
 void displayPlayer(vector<player>& players)
@@ -162,11 +181,26 @@ void displayPlayer(vector<player>& players)
 	unsigned int size = players.size();
 	for (unsigned int i = 0; i < size; i++)
 	{
+		cout << players[i].getToken() << endl;
 		cout << players[i].getName() << endl;
 		cout << players[i].getMoney() << endl;
 		cout << players[i].getutilityCount() << endl;
 		cout << players[i].getrailroadCount() << endl;
 		cout << players[i].getjailTime() << endl;
+	}
+}
+string findOwner(int playerToken, vector<player>& players)
+{
+	unsigned int size = players.size();
+	int foundPlayer = 0;
+	for (unsigned int i = 0; foundPlayer == 0; i++)
+	{
+		players[i].getToken();
+		if (players[i].getToken() == playerToken)
+		{
+			foundPlayer = 1;
+			return players[i].getName();
+		}
 	}
 }
 void makeCommunityCards(vector<CommunityCards>& communityCards)
@@ -194,31 +228,34 @@ void makeCommunityCards(vector<CommunityCards>& communityCards)
 void displayCommunityCards(vector<CommunityCards>&);
 void makeBoard(vector<gameBoard>& boardSquare){
 	//initialize square spaces
-	boardSquare.push_back(gameBoard("<-Go", 0, 0, false));
-	boardSquare.push_back(gameBoard("Mediterranean Avenue", 60, 2, false));
-	boardSquare.push_back(gameBoard("Community Chest", 0, 0, false));
-	boardSquare.push_back(gameBoard("Baltic Avenue", 60, 4, false));
-	boardSquare.push_back(gameBoard("INCOME TAX", 0, 200, false));
-	boardSquare.push_back(gameBoard("Reading Railroad", 200, 25, false));
-	boardSquare.push_back(gameBoard("Oriental Avenue", 100, 6, false));
-	boardSquare.push_back(gameBoard("Chance?", 0, 0, false));
-	boardSquare.push_back(gameBoard("Vermont Avenue", 100, 6, false));
-	boardSquare.push_back(gameBoard("Connecticute Avenue", 120, 8, false));
-	boardSquare.push_back(gameBoard("Jail", 0, 0, false));
-	boardSquare.push_back(gameBoard("St. Charles Place", 140, 10, false));
-	boardSquare.push_back(gameBoard("Electric Company", 150, 0, false));
+	boardSquare.push_back(gameBoard(0, "<-Go", 0, 0, false, -1));
+	boardSquare.push_back(gameBoard(1, "Mediterranean Avenue", 60, 2, false, -1));
+	boardSquare.push_back(gameBoard(0, "Community Chest", 0, 0, false, -1));
+	boardSquare.push_back(gameBoard(1, "Baltic Avenue", 60, 4, false, -1));
+	boardSquare.push_back(gameBoard(0, "INCOME TAX", 0, 200, false, -1));
+	boardSquare.push_back(gameBoard(2, "Reading Railroad", 200, 25, false, -1));
+	boardSquare.push_back(gameBoard(3, "Oriental Avenue", 100, 6, false, -1));
+	boardSquare.push_back(gameBoard(0, "Chance?", 0, 0, false, -1));
+	boardSquare.push_back(gameBoard(3, "Vermont Avenue", 100, 6, false, -1));
+	boardSquare.push_back(gameBoard(3, "Connecticute Avenue", 120, 8, false, -1));
+	boardSquare.push_back(gameBoard(0, "Jail", 0, 0, false, -1));
+	boardSquare.push_back(gameBoard(4, "St. Charles Place", 140, 10, false, -1));
+	boardSquare.push_back(gameBoard(5, "Electric Company", 150, 0, false, -1));
 }
 void displayBoard(vector<gameBoard>& boardSquare){
 
 	unsigned int size = boardSquare.size();
 	for (unsigned int i = 0; i<size; i++)
 	{
+		cout << i+1 << ". ";
+		//cout << boardSquare[i].getMonopoly() << endl;
 		cout << boardSquare[i].getSquareName() << endl;
 		//The rest of the board is found below...
 		/*cout << boardSquare[i].getSquareName() << endl;
 		cout << boardSquare[i].getSquareCost() << endl;
 		cout << boardSquare[i].getSquareRent() << endl;
 		cout << boardSquare[i].getSquareOwned() << endl;
+		cout << boardSquare[i].getOwnedBy() << endl;
 		*/
 	}
 }
