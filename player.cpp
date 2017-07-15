@@ -4,14 +4,16 @@
 
 player::player()
 {
+	token = 0;
 	name = "player";
 	money = 1500;
 	utilityCount = 0;
 	railroadCount = 0;
 	jailTime = 0;
 }
-player::player(string n, int m, int u, int rail, int jail)
+player::player(int t, string n, int m, int u, int rail, int jail)
 {
+	token = t;
 	name = n;
 	money = m;
 	utilityCount = u;
@@ -21,6 +23,14 @@ player::player(string n, int m, int u, int rail, int jail)
 player::~player()
 {
 }
+void player::setToken(int t)
+{
+	token = t;
+}
+int player::getToken()
+{
+	return token;
+}
 void player::setName(string n)
 {
 	name = n;
@@ -29,8 +39,6 @@ string player::getName()
 {
 	return name;
 }
-	void addMoney(int);
-	void subMoney(int);
 void player::addMoney(int m)
 {
 	money += m;
