@@ -4,6 +4,7 @@
 
 player::player()
 {
+	position = 0;
 	token = 0;
 	name = "player";
 	money = 1500;
@@ -11,8 +12,9 @@ player::player()
 	railroadCount = 0;
 	jailTime = 0;
 }
-player::player(int t, string n, int m, int u, int rail, int jail)
+player::player(int p, int t, string n, int m, int u, int rail, int jail)
 {
+	position = p;
 	token = t;
 	name = n;
 	money = m;
@@ -22,6 +24,15 @@ player::player(int t, string n, int m, int u, int rail, int jail)
 }
 player::~player()
 {
+}
+void player::setPosition(int p)
+{
+
+	position = p;
+}
+int player::getPosition()
+{
+	return position;
 }
 void player::setToken(int t)
 {
