@@ -7,8 +7,11 @@ class player
 {
 public:
 	player();
-	player(int, string, int, int, int, int);
+	player(int, int, string, int, int, int, int);
 	~player();
+
+	void setPosition(int);
+	int getPosition();
 
 	void setToken(int);
 	int getToken();
@@ -30,6 +33,7 @@ public:
 	int getjailTime();
 
 private:
+	int position;
 	int token;
 	string name;
 	int money;
