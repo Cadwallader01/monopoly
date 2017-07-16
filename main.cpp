@@ -10,16 +10,18 @@
 using namespace std;
 
 //prototypes for functions
+void pauseTime();
 int diceRoll();
 void makePurchase(int, int, vector<gameBoard>&, vector<player>&);
 void makePlayer(vector<player>&);
 void displayPlayer(vector<player>&);
+int makeMove(int, int, vector<player>&, vector<gameBoard>&);
 string findOwner(int, vector<player>&);
 void makeCommunityCards(vector<CommunityCards>&);
 void displayCommunityCards(vector<CommunityCards>&);
 void makeBoard(vector<gameBoard>&);
 void displayBoard(vector<gameBoard>&);
-void pauseTime();
+
 int main(){
 
 	//NOTES: WORK ON COMMUNITYCARDS HEADER/CPP and MAIN
@@ -36,7 +38,7 @@ int main(){
 	//to get dice roll
 	int playerRoll = 0;
 	//varibles to change between players
-	int currentPlayer = 1;
+	int currentPlayer = 0;
 	int iteration = 0;
 	//vectors for players and the board
 	vector<player> players;
@@ -52,38 +54,42 @@ int main(){
 	displayBoard(boardSquare);
 	//display player information
 	cout << endl;
-	cout << players[0].getName() << endl;
-	cout << "Starting with: $" << players[0].getMoney() << endl << endl;
-	cout << players[1].getName() << endl;
-	cout << "Starting with: $" << players[1].getMoney() << endl;
+	displayPlayer(players);
 
 	//player one goes first
 	cout << endl << endl << players[0].getName() << " you go first! Roll the dice!"<<endl;
 	//loop to play the game
 	while(players[currentPlayer].getMoney() > 0)
 	{
-		
-		iteration++;
-		if (iteration%2 != 0)
+		//if there is more than 1 player switch between them
+		if (players.size() > 1)
 		{
-			currentPlayer = 0;
-		}
-		//to switch between player 1 and 2
-		if (iteration%2 == 0)
-
-		{
-			currentPlayer = 1;
-		}
-		else
-		{
-			currentPlayer = 0;
+			iteration++;
+			if (iteration%2 != 0)
+			{
+				currentPlayer = 0;
+			}
+			//to switch between player 1 and 2
+			if (iteration%2 == 0)
+			{
+				currentPlayer = 1;
+			}
+			else
+			{
+				currentPlayer = 0;
+			}
 		}
 		cout << "It's " << players[currentPlayer].getName() << "'s turn! Roll the dice!" << endl;
 		//**********************************ROLLING THE DICE************************************
 		int roll = diceRoll();
 		cout << "You rolled a..." << roll << endl;
+		//sets player position-coming back around the board if necessary
+		roll = makeMove(roll, currentPlayer, players, boardSquare);
+		players[currentPlayer].setPosition(roll);
+		
 		//******************************MAKING/NOT MAKING A PURCHASE****************************
 		cout << "You landed on: " << boardSquare[roll].getSquareName() << endl;
+		//cout << "You landed on: " << boardSquare[roll].getSquareName() << endl;
 	//	if (boardSquare[roll].getSquareName() == "Community Chest")
 	//		cout << "YOU ARE IN COMMUNITY CARDS+++++++++++++" << endl;
 		makePurchase(roll, currentPlayer, boardSquare, players);
@@ -94,6 +100,33 @@ int main(){
 	system("pause");
 	return 0;
 }
+
+//pause the game by seconds
+void pauseTime()
+{
+	std::chrono::seconds dura(5);
+    std::this_thread::sleep_for(dura);
+}
+//roll the dice
+int diceRoll()
+{
+	//dice variables
+	int dice1 = 0;
+	int dice2 = 0;
+	int totalDice = 0;
+	//srand(time(0)); //ensures randomized number by help of time
+
+
+	//**********************************ROLLING THE DICE************************************
+	dice1 = rand()%6+1; //randomized number between 1-6
+	dice2 = rand()%6+1; //randomized number between 1-6
+	cout << "Dice one is: " << dice1 << endl;
+	cout << "Dice two is: " << dice2 << endl <<endl;
+	totalDice = dice1+dice2;
+
+	return totalDice;
+}
+//determine if square is available for purchase and finalize one if needed
 void makePurchase(int square, int currentPlayer, vector<gameBoard>& boardSquare, vector<player>& players)
 {
 	string owner = " ";
@@ -137,31 +170,10 @@ void makePurchase(int square, int currentPlayer, vector<gameBoard>& boardSquare,
 		}
 	}
 }
-void pauseTime()
-{
-	std::chrono::seconds dura(5);
-    std::this_thread::sleep_for(dura);
-}
-int diceRoll()
-{
-	//dice variables
-	int dice1 = 0;
-	int dice2 = 0;
-	int totalDice = 0;
-	//srand(time(0)); //ensures randomized number by help of time
-
-
-	//**********************************ROLLING THE DICE************************************
-	dice1 = rand()%6+1; //randomized number between 1-6
-	dice2 = rand()%6+1; //randomized number between 1-6
-	cout << "Dice one is: " << dice1 << endl;
-	cout << "Dice two is: " << dice2 << endl <<endl;
-	totalDice = dice1+dice2;
-
-	return totalDice;
-}
+//initialize players
 void makePlayer(vector<player>& players)
 {
+	int playerPosition = 0;
 	int playerToken = 0;
 	int amountOfPlayers = 0;
 	string name;
@@ -172,23 +184,42 @@ void makePlayer(vector<player>& players)
 	{
 		cout << "What is name of player " << i+1 << "? ";
 		cin >> name;
-		players.push_back(player(playerToken, name, 1500, 0, 0, 0));
+		players.push_back(player(playerPosition, playerToken, name, 1500, 0, 0, 0));
 		playerToken++;
 	}
 }
+//display players
 void displayPlayer(vector<player>& players)
 {
 	unsigned int size = players.size();
 	for (unsigned int i = 0; i < size; i++)
 	{
-		cout << players[i].getToken() << endl;
+		//cout << players[i].getPosition() << endl;
+		//cout << players[i].getToken() << endl;
 		cout << players[i].getName() << endl;
-		cout << players[i].getMoney() << endl;
-		cout << players[i].getutilityCount() << endl;
-		cout << players[i].getrailroadCount() << endl;
-		cout << players[i].getjailTime() << endl;
+		cout << "Starting with: $" << players[0].getMoney() << endl << endl;
+		//cout << players[i].getMoney() << endl;
+		//cout << players[i].getutilityCount() << endl;
+		//cout << players[i].getrailroadCount() << endl;
+		//cout << players[i].getjailTime() << endl;
 	}
 }
+//used to currect the roll from going past current vector size and changes it to correct position
+int makeMove(int roll, int currentPlayer, vector<player>& players, vector<gameBoard>& boardSquare)
+{
+	int validPosition = players[currentPlayer].getPosition();
+	//if player's roll goes past the current vector it will change to a valid move
+	for (int i = 0; i<roll; i++)
+	{
+		if (validPosition == 12)
+		{
+			validPosition = 0;
+		}
+		validPosition++;
+	}
+	return validPosition;
+}
+//determine owner of square landed on
 string findOwner(int playerToken, vector<player>& players)
 {
 	unsigned int size = players.size();
@@ -203,6 +234,7 @@ string findOwner(int playerToken, vector<player>& players)
 		}
 	}
 }
+//initialize community cards
 void makeCommunityCards(vector<CommunityCards>& communityCards)
 {
 	//initialize community cards
@@ -225,7 +257,9 @@ void makeCommunityCards(vector<CommunityCards>& communityCards)
 	communityCards.push_back(CommunityCards("You have won second prize in a beauty contest (Collect $10)", 0, 10));
 	communityCards.push_back(CommunityCards("You inherit $100 (Collect $100)", 0, 100));
 }
+//display community cards
 void displayCommunityCards(vector<CommunityCards>&);
+//initialize gameboard squares
 void makeBoard(vector<gameBoard>& boardSquare){
 	//initialize square spaces
 	boardSquare.push_back(gameBoard(0, "<-Go", 0, 0, false, -1));
@@ -242,6 +276,7 @@ void makeBoard(vector<gameBoard>& boardSquare){
 	boardSquare.push_back(gameBoard(4, "St. Charles Place", 140, 10, false, -1));
 	boardSquare.push_back(gameBoard(5, "Electric Company", 150, 0, false, -1));
 }
+//display current gameboard
 void displayBoard(vector<gameBoard>& boardSquare){
 
 	unsigned int size = boardSquare.size();
