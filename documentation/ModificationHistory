@@ -19,3 +19,6 @@ Date	   	Details
 		Wrote community card header/cpp file and initialized cards to use later
 07.14.17	Player classes, gameBoard classes, main.cpp
 		Added functionality to keep track of which squares are owned and which player specifically owns the square landed on.
+07.15.17	Player.h, player.cpp, main.cpp
+		Added makeMove function in main to loop through the game board depending how much player roll was. Added variable to 
+		player class to determine player’s position on board.
