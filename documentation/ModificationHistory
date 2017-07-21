@@ -22,3 +22,8 @@ Date	   	Details
 07.15.17	Player.h, player.cpp, main.cpp
 		Added makeMove function in main to loop through the game board depending how much player roll was. Added variable to 
 		player class to determine player’s position on board.
+07.19.17	Player and board class
+		Researching how to initialize these outside of main.
+07.21.17	Classes
+		Restructuring everything to have most functions outside of main.cpp.
+
