@@ -1,15 +1,20 @@
-#ifndef PLAYER_H_
-#define PLAYER_H_
+#ifndef PLAYER_H
+#define PLAYER_H
 #include <string>
 using namespace std;
 
-class player
-{
-public:
+struct player{
+	
+	int position;
+	int token;
+	string name;
+	int money;
+	int utilityCount;
+	int railroadCount;
+	int jailTime;
+
 	player();
 	player(int, int, string, int, int, int, int);
-	~player();
-
 	void setPosition(int);
 	int getPosition();
 
@@ -23,23 +28,13 @@ public:
 	void subMoney(int);
 	int getMoney();		
 
-	void setutilityCount(int);	//setter
-	int getutilityCount();		//getter
+	void setutilityCount(int);
+	int getutilityCount();		
 
 	void setrailroadCount(int);
 	int getrailroadCount();
 
 	void setjailTime(int);
 	int getjailTime();
-
-private:
-	int position;
-	int token;
-	string name;
-	int money;
-	int utilityCount;
-	int railroadCount;
-	int jailTime;
 };
-
 #endif
