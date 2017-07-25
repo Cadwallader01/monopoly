@@ -26,4 +26,13 @@ Date	   	Details
 		Researching how to initialize these outside of main.
 07.21.17	Classes
 		Restructuring everything to have most functions outside of main.cpp.
+07.23.17	checkMonopoly function
+		Rewrote part of this function to return true or false when player has a monopoly
+07.24.17	otherSpaces function
+		Created otherSpaces function to deal with spaces that are no properties or are dealt with uniquely
+		(community chest, income tax, chance, railroads, & utilities)
+07.24.17	otherSpaces function, pickCommunityChestCard, pickChanceCard, and makeChanceCards
+		Worked on making otherSpaces function more clean, made pickCommunityChestCard to randomly pick a card for player
+		subtract or add money accordingly as well as pickChanceCard which does the same. Created makeChanceCards to
+		initialize chance cards.
 
