@@ -35,4 +35,10 @@ Date	   	Details
 		Worked on making otherSpaces function more clean, made pickCommunityChestCard to randomly pick a card for player
 		subtract or add money accordingly as well as pickChanceCard which does the same. Created makeChanceCards to
 		initialize chance cards.
+07.25.17	pickCommunityCard, communityCard struct, makeMove function, main.cpp
+		Added functionality to move players to different position if community card calls for it.
+		Added new variable to communityCard struct for playerPosition movement.
+		Added code to makeMove function to give player $200 every time they pass or land on go.
+		Added calls to pauseTime function to give new feel before/after and in between player turns.
+		Player’s move are also now displayed during their turn with 1 second pause while they move throughout the board.
 
