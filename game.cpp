@@ -87,12 +87,14 @@ CommunityCards::CommunityCards()
 	card = "NULL";
 	moneyOwed = 0;
 	moneyPaid = 0;
+	playerPosition = 0;
 }
-CommunityCards::CommunityCards(string c, int mOwed, int mPaid)
+CommunityCards::CommunityCards(string c, int mOwed, int mPaid, int p)
 {
 	card = c;
 	moneyOwed = mOwed;
 	moneyPaid = mPaid;
+	playerPosition = p;
 }
 void CommunityCards::setCard(string c)
 {
@@ -109,6 +111,14 @@ int CommunityCards::getMoneyOwed()
 int CommunityCards::getMoneyPaid()
 {
 	return moneyPaid;
+}
+void CommunityCards::setPlayerPosition(int p)
+{
+	playerPosition = p;
+}
+int CommunityCards::getPlayerPosition()
+{
+	return playerPosition;
 }
 
 /************************CHANCE CARDS STRUCT FUNCTIONS***********************/
@@ -143,9 +153,9 @@ int chanceCards::getMoneyPaid()
 
 /*******************************OTHER FUNCTIONS*****************************/
 //pause the game by seconds
-void pauseTime()
+void pauseTime(int time)
 {
-	std::chrono::seconds dura(3);
+	std::chrono::seconds dura(time);
     std::this_thread::sleep_for(dura);
 }
 //rolling the dice
@@ -161,8 +171,8 @@ int diceRoll()
 	dice2 = rand()%6+1; //randomized number between 1-6
 	cout << "Dice one is: " << dice1 << endl;
 	cout << "Dice two is: " << dice2 <<endl;
-	//totalDice = dice1+dice2;	//commented out for troubleshooting
-	totalDice = 7;
+	totalDice = dice1+dice2;	//commented out for troubleshooting
+	//totalDice = 2;
 
 	return totalDice;
 }
@@ -232,15 +242,30 @@ void makePurchase(int space, int currentPlayer, vector<property>& properties, ve
 //used to currect the roll from going past current vector size and changes it to correct position
 int makeMove(int roll, int currentPlayer, vector<player>& players, vector<property>& property)
 {
+	cout << "                        [" << players[currentPlayer].getName() << "'s Move]" << endl;
 	int validPosition = players[currentPlayer].getPosition();
 	//if player's roll goes past the current vector it will change to a valid move
 	for (int i = 0; i<roll; i++)
 	{
+		pauseTime(1);
 		if (validPosition == 12)
 		{
-			validPosition = 0;
+			validPosition = -1;
 		}
 		validPosition++;
+		//display player's move
+		cout << "                   " << property[validPosition].getPropertyName() << endl;
+		if (property[validPosition].getPropertyName() == "<-Go")
+		{
+			cout << endl;
+			cout << "                   (Collect $200!)" << endl;
+			players[currentPlayer].addMoney(200);
+			//display player's new balance
+			cout << "                   " << players[currentPlayer].getName() << " your new balance is $"
+				 << players[currentPlayer].getMoney() << endl << endl;
+			pauseTime(4);
+		}
+
 	}
 	return validPosition;
 }
@@ -325,30 +350,49 @@ void pickCommunityChestCard(int currentPlayer, vector<player>& players, vector<C
 	//currentPlayer
 	//players vector
 	int cardPick = 0;
-	cardPick = rand()%12;	//currently only 12 cards total
-	cout << communityCard[cardPick].getCard() << endl;
+	cardPick = rand()%13;	//currently only 13 cards total
+	cout << endl << "                        " << communityCard[cardPick].getCard() << endl << endl;
 	//if player owes money
 	if (communityCard[cardPick].getMoneyOwed() > 0)
 	{
 		players[currentPlayer].subMoney(communityCard[cardPick].getMoneyOwed());
+		//display player's new balance
+		cout << players[currentPlayer].getName() << " your new balance is $"
+			 << players[currentPlayer].getMoney() << endl;
 	}
 	//if player gets paid money
 	else if (communityCard[cardPick].getMoneyPaid() > 0)
 	{
 		players[currentPlayer].addMoney(communityCard[cardPick].getMoneyPaid());
+		//display player's new balance
+		cout << players[currentPlayer].getName() << " your new balance is $"
+			 << players[currentPlayer].getMoney() << endl;
 	}
 
-	//display player's new balance
-	cout << players[currentPlayer].getName() << " your new balance is $"
-		 << players[currentPlayer].getMoney() << endl;
+	//if player position changes
+	if (communityCard[cardPick].getPlayerPosition() == 0)
+	{
+		players[currentPlayer].setPosition(communityCard[cardPick].getPlayerPosition());
+	}
+	else if (communityCard[cardPick].getPlayerPosition() == 10)
+	{
+		players[currentPlayer].setPosition(communityCard[cardPick].getPlayerPosition());
+		players[currentPlayer].setjailTime(1);
+		cout << "You are in jail now :(" << endl;
+	}
 }
 void pickChanceCards(int currentPlayer, vector<player>& players, vector<chanceCards>& chanceCard)
 {
+	//if (setplayerPosition = 10) then put player IN JAIL NOT VISITING
+
+	//NEXT To-do: For collect money from each player cards run a loop to take money from each player
+
+
 	//currentPlayer
 	//players vector
 	int cardPick = 0;
 	cardPick = rand()%5;	//currently only 5 cards total
-	cout << chanceCard[cardPick].getCard() << endl;
+	cout <<  chanceCard[cardPick].getCard() << endl;
 	//if player owes money
 	if (chanceCard[cardPick].getMoneyOwed() > 0)
 	{
@@ -419,24 +463,24 @@ void displayBoard(vector<property>& properties){
 //initialize community cards
 void makeCommunityCards(vector<CommunityCards>& communityCards)
 {
-	//CommunityCards(string name, int moneyOwed, int moneyPaid)
-	communityCards.push_back(CommunityCards("Advance to Go (Collect $200)", 0, 200));
-	communityCards.push_back(CommunityCards("Bank error in your favor (Collect $200)", 0, 200));
-	communityCards.push_back(CommunityCards("Doctor's fees (Pay $50)", 50, 0));
-	communityCards.push_back(CommunityCards("From sale of stock you get $50 (Collect $50)", 0, 50));
-	//communityCards.push_back(CommunityCards("Get Out of Jail Free (Get out of Jail free)", 0, 0));
-	//communityCards.push_back(CommunityCards("Go to Jail - Go directly to jail - Do not pass Go - Do not collect $200", 0, 0));
-	//communityCards.push_back(CommunityCards("Grand Opera Night (Collect $50 from every player for opening night seats)", 0, 50));
-	communityCards.push_back(CommunityCards("Holiday Fund matures (Collect $100)", 0, 100));
-	communityCards.push_back(CommunityCards("Income tax refund (Collect $20)", 0, 20));
-	//communityCards.push_back(CommunityCards("It is your birthday (Collect $10 from each player)", 0, 10));
-	communityCards.push_back(CommunityCards("Life insurance matures (Collect $100)", 0, 100));
-	communityCards.push_back(CommunityCards("Pay hospital fees (Pay $100)", 100, 0));
-	communityCards.push_back(CommunityCards("Pay school fees (Pay $150)", 150, 0));
-	communityCards.push_back(CommunityCards("Receive $25 consultancy fee (Collect $25)", 0, 25));
-	//communityCards.push_back(CommunityCards("You are assessed for street repairs (Pay $40 per house, $115 per hotel)", 0, 0));
-	communityCards.push_back(CommunityCards("You have won second prize in a beauty contest (Collect $10)", 0, 10));
-	communityCards.push_back(CommunityCards("You inherit $100 (Collect $100)", 0, 100));
+	//CommunityCards(string name, int moneyOwed, int moneyPaid, playerPosition)
+	communityCards.push_back(CommunityCards("Advance to Go (Collect $200)", 0, 200, 0));
+	communityCards.push_back(CommunityCards("Bank error in your favor (Collect $200)", 0, 200, -1));
+	communityCards.push_back(CommunityCards("Doctor's fees (Pay $50)", 50, 0, -1));
+	communityCards.push_back(CommunityCards("From sale of stock you get $50 (Collect $50)", 0, 50, -1));
+	//communityCards.push_back(CommunityCards("Get Out of Jail Free (Get out of Jail free)", 0, 0, -1));
+	communityCards.push_back(CommunityCards("Go to Jail - Go directly to jail - Do not pass Go - Do not collect $200", 0, 0, 10));
+	//communityCards.push_back(CommunityCards("Grand Opera Night (Collect $50 from every player for opening night seats)", 0, 50, -1));
+	communityCards.push_back(CommunityCards("Holiday Fund matures (Collect $100)", 0, 100, -1));
+	communityCards.push_back(CommunityCards("Income tax refund (Collect $20)", 0, 20, -1));
+	//communityCards.push_back(CommunityCards("It is your birthday (Collect $10 from each player)", 0, 10, -1));
+	communityCards.push_back(CommunityCards("Life insurance matures (Collect $100)", 0, 100, -1));
+	communityCards.push_back(CommunityCards("Pay hospital fees (Pay $100)", 100, 0, -1));
+	communityCards.push_back(CommunityCards("Pay school fees (Pay $150)", 150, 0, -1));
+	communityCards.push_back(CommunityCards("Receive $25 consultancy fee (Collect $25)", 0, 25, -1));
+	//communityCards.push_back(CommunityCards("You are assessed for street repairs (Pay $40 per house, $115 per hotel)", 0, 0, -1));
+	communityCards.push_back(CommunityCards("You have won second prize in a beauty contest (Collect $10)", 0, 10, -1));
+	communityCards.push_back(CommunityCards("You inherit $100 (Collect $100)", 0, 100, -1));
 }
 void makeChanceCards(vector<chanceCards>& ChanceCards)
 {
