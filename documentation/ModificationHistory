@@ -41,4 +41,7 @@ Date	   	Details
 		Added code to makeMove function to give player $200 every time they pass or land on go.
 		Added calls to pauseTime function to give new feel before/after and in between player turns.
 		Player’s move are also now displayed during their turn with 1 second pause while they move throughout the board.
+07.26.17	jailRoll and checkJailStatus function
+		Created two functions. jailRoll to roll the dice for doubles and checkJailStatus to ask players to either pay or roll
+		to get out of jail. Main.cpp is now also in an if statement to see if player isn’t in jail before playing the game.
 
