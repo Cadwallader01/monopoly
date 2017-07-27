@@ -11,10 +11,11 @@ struct player{
 	int money;
 	int utilityCount;
 	int railroadCount;
-	int jailTime;
+	int jailBail;
+	bool jailTime;
 
 	player();
-	player(int, int, string, int, int, int, int);
+	player(int, int, string, int, int, int, int, bool);
 	void setPosition(int);
 	int getPosition();
 
@@ -34,7 +35,11 @@ struct player{
 	void setrailroadCount(int);
 	int getrailroadCount();
 
-	void setjailTime(int);
-	int getjailTime();
+	void setJailBail(int);
+	int getJailBail();
+
+	void setjailTime(bool);
+	bool getjailTime();
+
 };
 #endif
