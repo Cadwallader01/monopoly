@@ -10,8 +10,12 @@ using namespace std;
 //prototypes
 bool checkMonopoly(int, int, vector<player>&, vector<property>&);
 string findOwner(int, vector<player>&);
-
-/**************************PROPERTY STRUCT FUNCTIONS*************************/
+void makePlayer(vector<player>&);
+void displayPlayer(vector<player>&);
+void makePurchase(int, int, vector<property>&, vector<player>&);
+/***************************************************************************/
+/**************************PROPERTY STRUCT FUNCTIONS************************/
+/***************************************************************************/
 property::property()
 {
 	monopoly = 0;
@@ -80,8 +84,9 @@ int property::getOwnedBy()
 {
 	return ownedBy;
 }
-
-/***********************COMMUNITY CARDS STRUCT FUNCTIONS*********************/
+/***************************************************************************/
+/***********************COMMUNITY CARDS STRUCT FUNCTIONS********************/
+/***************************************************************************/
 CommunityCards::CommunityCards()
 {
 	card = "NULL";
@@ -120,8 +125,9 @@ int CommunityCards::getPlayerPosition()
 {
 	return playerPosition;
 }
-
-/************************CHANCE CARDS STRUCT FUNCTIONS***********************/
+/***************************************************************************/
+/************************CHANCE CARDS STRUCT FUNCTIONS**********************/
+/***************************************************************************/
 chanceCards::chanceCards(){
 	card = "NULL";
 	moneyOwed = 0;
@@ -150,8 +156,9 @@ int chanceCards::getMoneyPaid()
 	return moneyPaid;
 }
 
-
-/*******************************OTHER FUNCTIONS*****************************/
+/***************************************************************************/
+/********************************GAME FUNCTIONS*****************************/
+/***************************************************************************/
 //pause the game by seconds
 void pauseTime(int time)
 {
@@ -171,73 +178,10 @@ int diceRoll()
 	dice2 = rand()%6+1; //randomized number between 1-6
 	cout << "Dice one is: " << dice1 << endl;
 	cout << "Dice two is: " << dice2 <<endl;
-	totalDice = dice1+dice2;	//commented out for troubleshooting
-	//totalDice = 2;
+	//totalDice = dice1+dice2;	//commented out for troubleshooting
+	totalDice = 2;
 
 	return totalDice;
-}
-//determine if property is available for purchase and finalize one if needed
-void makePurchase(int space, int currentPlayer, vector<property>& properties, vector<player>& players)
-{
-	string owner = " ";
-	string userInput;
-	int cost = 0;
-	bool monopolyMade = false;
-	int monopolyTally = 0;
-	unsigned int size = properties.size();
-	int monopolyGroup = properties[space].getMonopoly();
-	int playerToken = -1;
-	//if square is not owned ask player if they'd like to make a purchase
-	if (properties[space].getOwnedBy() == -1)
-	{
-		cout << players[currentPlayer].getName() << " it's available to buy! Would you like to purchase for $" 
-			<< properties[space].getPropertyCost() << "?" << endl;
-		cout << "Type 'y' for Yes or 'n' for No " << endl;
-		cin >> userInput;
-		if (userInput == "y")
-		{
-			cost = properties[space].getPropertyCost();
-			players[currentPlayer].subMoney(cost);
-			playerToken = players[currentPlayer].getToken();
-			properties[space].setOwnedBy(playerToken);
-			cout << "Great! You now own " << properties[space].getPropertyName() << "!" << endl;
-			//check if player just made a monoply with purchase
-			monopolyMade = checkMonopoly(space, currentPlayer, players, properties);
-				//tell player that current purchase made a monopoly with these squares...
-			if (monopolyMade == true)
-			{
-				cout << "You own a monopoly! with these squares: " <<endl;
-				for (unsigned int i = 0; i<size; i++)
-				{
-					if (properties[i].getMonopoly() == monopolyGroup)
-					{
-						cout << properties[i].getPropertyName() << endl;
-					}
-				}
-			}
-			//display player's new balance
-			cout << players[currentPlayer].getName() << " your new balance is $"
-				 << players[currentPlayer].getMoney() << endl;
-		}
-		else if (userInput == "n")
-		{
-			cout << "Okay no purchase has been made!" << endl;
-		}
-	}
-	//if square is owned let player know who already owns it
-	else if(properties[space].getOwnedBy() > -1)
-	{
-		playerToken = properties[space].getOwnedBy();
-		owner = findOwner(playerToken, players);
-		if (players[currentPlayer].getName() == owner)
-		{
-			cout << "You already own this!" << endl;
-		}
-		else
-		{
-			cout << "Sorry the square is already owned by " << owner << endl;
-		}
-	}
 }
 //used to currect the roll from going past current vector size and changes it to correct position
 int makeMove(int roll, int currentPlayer, vector<player>& players, vector<property>& property)
@@ -269,86 +213,8 @@ int makeMove(int roll, int currentPlayer, vector<player>& players, vector<proper
 	}
 	return validPosition;
 }
-//initialize gameboard squares
-void makeBoard(vector<property>& properties){
-	//initialize square spaces
-	//gameBoard(Monopoly, squareName, squareCost, squareRent, squareOwned, ownedBy)
-	properties.push_back(property(-2, "<-Go", 0, 0, false, -2));
-	properties.push_back(property(1, "Mediterranean Avenue", 60, 2, false, -1));
-	properties.push_back(property(-2, "Community Chest", 0, 0, false, -2));
-	properties.push_back(property(1, "Baltic Avenue", 60, 4, false, -1));
-	properties.push_back(property(-2, "INCOME TAX", 0, 200, false, -2));
-	properties.push_back(property(2, "Reading Railroad", 200, 25, false, -1));
-	properties.push_back(property(3, "Oriental Avenue", 100, 6, false, -1));
-	properties.push_back(property(-2, "Chance?", 0, 0, false, -2));
-	properties.push_back(property(3, "Vermont Avenue", 100, 6, false, -1));
-	properties.push_back(property(3, "Connecticute Avenue", 120, 8, false, -1));
-	properties.push_back(property(-2, "Jail", 0, 0, false, -2));
-	properties.push_back(property(4, "St. Charles Place", 140, 10, false, -1));
-	properties.push_back(property(5, "Electric Company", 150, 0, false, -1));
-}
-
-//determine owner of square landed on
-string findOwner(int playerToken, vector<player>& players)
-{
-	unsigned int size = players.size();
-	int foundPlayer = 0;
-	for (unsigned int i = 0; foundPlayer == 0; i++)
-	{
-		players[i].getToken();
-		if (players[i].getToken() == playerToken)
-		{
-			foundPlayer = 1;
-			return players[i].getName();
-		}
-	}
-}
-
-//check if player has a monopoly
-bool checkMonopoly(int square, int currentPlayer, vector<player>& players, vector<property>& properties)
-{
-	bool monopoly = false;
-	int monopolyTally = 0;
-	int playerToken = players[currentPlayer].getToken();
-	int monopolyGroup = properties[square].getMonopoly();
-	unsigned int size = properties.size();
-	//collect how many squares make up that current monopolyGroup
-	for (unsigned int i = 0; i<size; i++)
-	{
-		if (properties[i].getMonopoly() == monopolyGroup)
-		{
-			monopolyTally++;
-		}
-	}
-	//Ex. monopolyTally = 3
-	//make sure the player owns the same amount of squares in that monopolyGroup
-	for (unsigned int i = 0; i<size; i++)
-	{
-		if (properties[i].getMonopoly() == monopolyGroup)
-		{
-			//if player owns that square then monopolyTally--
-			if (players[currentPlayer].getToken() == properties[i].getOwnedBy())
-			{
-				monopolyTally--;
-			}
-		}
-	}
-	//if monopolyTally == 0 then there is a monopoly else there isn't
-	if (monopolyTally == 0)
-	{
-		monopoly = true;
-	}
-	else if (monopolyTally > 0)
-	{
-		monopoly = false;
-	}
-	return monopoly;
-}
-
 void pickCommunityChestCard(int currentPlayer, vector<player>& players, vector<CommunityCards>& communityCard)
 {
-	//currentPlayer
-	//players vector
 	int cardPick = 0;
 	cardPick = rand()%13;	//currently only 13 cards total
 	cout << endl << "                        " << communityCard[cardPick].getCard() << endl << endl;
@@ -377,7 +243,7 @@ void pickCommunityChestCard(int currentPlayer, vector<player>& players, vector<C
 	else if (communityCard[cardPick].getPlayerPosition() == 10)
 	{
 		players[currentPlayer].setPosition(communityCard[cardPick].getPlayerPosition());
-		players[currentPlayer].setjailTime(1);
+		players[currentPlayer].setjailTime(true);
 		cout << "You are in jail now :(" << endl;
 	}
 }
@@ -387,9 +253,6 @@ void pickChanceCards(int currentPlayer, vector<player>& players, vector<chanceCa
 
 	//NEXT To-do: For collect money from each player cards run a loop to take money from each player
 
-
-	//currentPlayer
-	//players vector
 	int cardPick = 0;
 	cardPick = rand()%5;	//currently only 5 cards total
 	cout <<  chanceCard[cardPick].getCard() << endl;
@@ -411,8 +274,7 @@ void pickChanceCards(int currentPlayer, vector<player>& players, vector<chanceCa
 //calls other functions if space landed on is not a property
 void otherSpaces(int space, int currentPlayer, vector<player>& players, vector<property>& properties, vector<CommunityCards>& communityCard, vector<chanceCards>& chanceCard)
 {
-	//space = current space on
-	//currentPlayer = represents current player
+	//if space landed on is NOT a property or is a special type corresponding actions are taken
 	if (properties[space].getPropertyName() == "Community Chest")
 	{
 		pickCommunityChestCard(currentPlayer, players, communityCard);
@@ -441,7 +303,23 @@ void otherSpaces(int space, int currentPlayer, vector<player>& players, vector<p
 		cout << "This is a utitlity space..." << endl;
 	}
 }
-
+//initialize gameboard squares
+void makeBoard(vector<property>& properties){
+	//gameBoard(Monopoly, squareName, squareCost, squareRent, squareOwned, ownedBy)
+	properties.push_back(property(-2, "<-Go", 0, 0, false, -2));
+	properties.push_back(property(1, "Mediterranean Avenue", 60, 2, false, -1));
+	properties.push_back(property(-2, "Community Chest", 0, 0, false, -2));
+	properties.push_back(property(1, "Baltic Avenue", 60, 4, false, -1));
+	properties.push_back(property(-2, "INCOME TAX", 0, 200, false, -2));
+	properties.push_back(property(2, "Reading Railroad", 200, 25, false, -1));
+	properties.push_back(property(3, "Oriental Avenue", 100, 6, false, -1));
+	properties.push_back(property(-2, "Chance?", 0, 0, false, -2));
+	properties.push_back(property(3, "Vermont Avenue", 100, 6, false, -1));
+	properties.push_back(property(3, "Connecticute Avenue", 120, 8, false, -1));
+	properties.push_back(property(-2, "Jail", 0, 0, false, -2));
+	properties.push_back(property(4, "St. Charles Place", 140, 10, false, -1));
+	properties.push_back(property(5, "Electric Company", 150, 0, false, -1));
+}
 //display current gameboard
 void displayBoard(vector<property>& properties){
 
@@ -461,6 +339,10 @@ void displayBoard(vector<property>& properties){
 	}
 }
 //initialize community cards
+
+/***************************************************************************/
+/***************************COMMUNITY CARD FUNCTIONS************************/
+/***************************************************************************/
 void makeCommunityCards(vector<CommunityCards>& communityCards)
 {
 	//CommunityCards(string name, int moneyOwed, int moneyPaid, playerPosition)
@@ -482,6 +364,9 @@ void makeCommunityCards(vector<CommunityCards>& communityCards)
 	communityCards.push_back(CommunityCards("You have won second prize in a beauty contest (Collect $10)", 0, 10, -1));
 	communityCards.push_back(CommunityCards("You inherit $100 (Collect $100)", 0, 100, -1));
 }
+/***************************************************************************/
+/****************************CHANCE CARD FUNCTIONS**************************/
+/***************************************************************************/
 void makeChanceCards(vector<chanceCards>& ChanceCards)
 {
 	//CommunityCards(string name, int moneyOwed, int moneyPaid)
@@ -502,4 +387,79 @@ void makeChanceCards(vector<chanceCards>& ChanceCards)
 	//ChanceCards.push_back(chanceCards("You have been elected Chairman of the Board (Pay each player $50)", 0, 0));
 	ChanceCards.push_back(chanceCards("Your building and loan matures (Collect $150)", 0, 150));
 	ChanceCards.push_back(chanceCards("You have won a crossword competition (Collect $100)", 0, 100));
+}
+/***************************************************************************/
+/******************************IN JAIL FUNCTIONS****************************/
+/***************************************************************************/
+//checks to see if player rolled doubles to get out of jail
+bool jailRoll()
+{
+	//dice variables
+	int dice1 = 0;
+	int dice2 = 0;
+	bool jailStatus = false;
+	srand(time(0)); //ensures randomized number by help of time
+
+	dice1 = rand()%6+1; //randomized number between 1-6
+	dice2 = rand()%6+1; //randomized number between 1-6
+	cout << "Dice one is: " << dice1 << endl;
+	cout << "Dice two is: " << dice2 <<endl;
+	
+	//if dice are the same then player is out of jail
+	if (dice1 == dice2)
+	{
+		cout << "You rolled doubles! You are now out of jail and can move on your next turn!" << endl;
+		jailStatus = false;
+	}
+	else if (dice1 != dice2)
+	{
+		cout << "You did not roll doubles and are still in jail." << endl;
+		jailStatus = true;
+	}
+	return jailStatus;
+}
+//if player is in jail function asks them if they'd like to roll doubles or pay to get out-player has 3 tries total
+void checkJailStatus(int currentPlayer, vector<player>& players)
+{
+	int jailBail = players[currentPlayer].getJailBail();
+	string userInput = " ";
+
+	//use jailBail to count to 3...if player has rolled for doubles 3 times then they are forced to pay to get out
+	//GIVE option to roll to get out of jail OR pay to just get out
+	if (players[currentPlayer].getjailTime() == true && players[currentPlayer].getJailBail() > 0)
+	{
+		cout << "You are currently in jail. You may pay a fine of $50 or try to roll for doubles to get out." << endl;
+		cout << "You have " << players[currentPlayer].getJailBail() << " tries left before you have to pay fine to get out." << endl;
+		cout << "Type 'p' to pay $50 fine or 'r' to try to roll doubles!" << endl;
+		cin >> userInput;
+		if (userInput == "p")
+		{
+			players[currentPlayer].setJailBail(3);
+			players[currentPlayer].setjailTime(false);
+			players[currentPlayer].subMoney(50);
+			//display player's new balance
+			cout << players[currentPlayer].getName() << " your new balance is $"
+			 << players[currentPlayer].getMoney() << endl;
+		}
+		else if (userInput == "r")
+		{
+			players[currentPlayer].setJailBail(jailBail-1);
+			players[currentPlayer].setjailTime(jailRoll());
+		}
+	}
+	else if (players[currentPlayer].getjailTime() == true && players[currentPlayer].getJailBail() == 0)
+	{
+		cout << "You are currently in jail but have " << players[currentPlayer].getJailBail() << " tries left to roll doubles!" << endl;
+		cout << "You must pay $50 to get out of jail." << endl;
+		players[currentPlayer].setJailBail(3);
+		players[currentPlayer].setjailTime(false);
+		players[currentPlayer].subMoney(50);
+		//display player's new balance
+		cout << players[currentPlayer].getName() << " your new balance is $"
+			 << players[currentPlayer].getMoney() << endl;
+	}
+	else
+	{
+		players[currentPlayer].setJailBail(3);
+	}
 }
