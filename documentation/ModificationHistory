@@ -44,4 +44,23 @@ Date	   	Details
 07.26.17	jailRoll and checkJailStatus function
 		Created two functions. jailRoll to roll the dice for doubles and checkJailStatus to ask players to either pay or roll
 		to get out of jail. Main.cpp is now also in an if statement to see if player isn’t in jail before playing the game.
+07.27.17	jailRoll, pickCommunityCard
+		Deleted jailRoll function and just ran “%2=0” with diceRoll() value.
+		Added functionality for Community Chest Cards that say you get paid from multiple players.
+07.28.17	Get Out of Jail Free Card, Community Chest Cards, Chance Cards
+		Added functionality for Get Out of Jail Free Card player can now hold as well as use it if they are in jail (will be able to trade in the future).
+		Made all Community Cards available to draw except one that asks to pay repairs for every house or hotel you own until I am able to add build house/hotel functionality.
+		Moved Community Chest Card functions into a CommunityCards.cpp for better organization.
+		Moved Chance Card functions into chanceCards.cpp for better organization.
+08.01.17	pickCommunityCard
+		Trying to change the portion of pickCommunityCard function to reset position of the player to actually show the player moving using makeMove function.
+08.06.17	Property struct
+		Added a bool variable “monopoly” to each property which will change to true once property is part of a monopoly.
+		Changed past variable monopoly to “monopolyGroup” to determine which spaces are grouped together.
+08.13.17	propertyBuild function, end of turn options
+		Started work on propertyBuild function to show user which properties they own a monopoly on and allow them to select a monopoly to build on.
+		Added options at end of player’s turn to show their properties, monopolies, and or call the propertyBuild function.
+08.29.17	propertyBuild function
+		Continued work on propertyBuild function. Displays to user which properties they own in a monopoly and asks them which group they’d like to build on.
+
 
