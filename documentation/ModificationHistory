@@ -67,5 +67,3 @@ Date	   	Details
 08.29.17	propertyBuild function
 		Continued work on propertyBuild function. Displays to user which properties they own in a monopoly and asks them which
 		group they’d like to build on.
-
-
