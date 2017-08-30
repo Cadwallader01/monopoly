@@ -1,5 +1,7 @@
 #include "game.h"
 #include "player.h"
+#include "CommunityCards.h"
+#include "chanceCards.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -22,12 +24,13 @@ void pauseTime(int);
 int diceRoll();
 int makeMove(int, int, vector<player>&, vector<property>&);
 void otherSpaces(int, int, vector<player>&, vector<property>&, vector<CommunityCards>&, vector<chanceCards>&);
+void propertyBuild(int, int, vector<player>&, vector<property>&);
 void makeBoard(vector<property>&);
 void displayBoard(vector<property>&);
 
 //communityCard functions
 void makeCommunityCards(vector<CommunityCards>&);
-void pickCommunityChestCard(int, vector<player>&, vector<CommunityCards>&);
+void pickCommunityChestCard(int, vector<player>&, vector<CommunityCards>&, vector<property>&);
 
 //chanceCard functions
 void makeChanceCards(vector<chanceCards>&);
@@ -35,14 +38,23 @@ void pickChanceCards(int, vector<player>&, vector<chanceCards>&);
 
 int main(){
 
-	//WORKING ON: pickCommunityChestCard
-	//			-work on cards that give you money from other players
-	//			-work on cards that make you pay players
-	//			-work on cards that make you fix houses/hotels
-
+	int roll = 0;
+	//WORKING ON: propertyBuild function
+	//NEXT: -Test building houses
+	//		-Add rest of board
+	//		-Fix position changes for community chest cards...then test each card
+	//		-Using community chest work on chance cards
+	//WORKING ON: pickChanceCards function
+	//			- adding if-then statements depending on which cards are picked and then making those cards available when
+	//			  completed
+	//NOTES: When community chest/chance cards are picked up make them unavailable to pick up again...since the vector
+	//		 shrinks and some if statements depend on the position of the card vectors maybe I must add a new bool to the
+	//		 constructor in order to see if card is available or not before picking up...will look into this later
+	//NOTES: Add Community Chest Card that makes you fix houses/hotel
+	//			-when added change the number of cards available in the pickCommunityChestCard function
+	//NOTES: Add trade option for Get Out of Jail Free Card
 	//NOTES: When player wants to build a house checkMonoply will check where they can build houses
 	//			-work on functionality to build houses/hotels
-	//NOTES: Work on Chance Cards
 	//NOTES: Before game starts ALLOW USERS TO ROLL DICE TO SEE WHO GOES FIRST
 	//NOTES: Buying - make sure player has enough money to buy---otherwise can't afford property
 
@@ -108,7 +120,7 @@ int main(){
 			cout << "It's " << players[currentPlayer].getName() << "'s turn! Roll the dice!" << endl;
 			pauseTime(5);	//pause for 5 seconds
 			//**********************************ROLLING THE DICE************************************
-			int roll = diceRoll();
+			roll = diceRoll();
 			cout << "You rolled a " << roll << endl;
 			pauseTime(5);	//pause for 5 seconds
 			//sets player position-coming back around the board if necessary
@@ -126,16 +138,51 @@ int main(){
 		{
 			checkJailStatus(currentPlayer, players);
 		}
-		//**************************************OTHER OPTIONS***********************************
-		cout << "Would you like to do anything else? (Type 'b' for build or 'n' for No (NOTE: Trading Unavailable) "<<endl; 
-		cin >> userInput;
-		if (userInput == "b")
+		userInput = " ";
+		while (userInput != "n")
 		{
-			cout << "building coming soon..." << endl;
-		}
+			cout << "Would you like to do anything else? (Type 'n' for No, 'b' to build houses/hotels, 'p' to see your properties," << endl;
+			cout << "or 'm' to see your monopolies (NOTE: Trading Unavailable) "<<endl; 
+			cin >> userInput;
+			cout << endl;
+			//*************************************END TURN OPTIONS*********************************
+			if (userInput == "b")
+			{
+				//***********************************BUILD HOUSES/HOTELS****************************
+				propertyBuild(roll, currentPlayer, players, property);
+				//cout << "building coming soon..." << endl;
+			}
+			else if(userInput == "p")
+			{
+				int playerToken = players[currentPlayer].getToken();
+				unsigned int size = property.size();
 
+				cout << "You own the following properties:" << endl;
+				for (unsigned int i = 0; i<size; i++)
+				{
+					if (property[i].getOwnedBy() == playerToken)
+					{
+						cout << "[" << property[i].getMonopolyGroup() << "] " << property[i].getPropertyName() << endl;
+					}
+				}
+			}
+			else if(userInput == "m")
+			{
+				int playerToken = players[currentPlayer].getToken();
+				unsigned int size = property.size();
 
-	}
+				cout << "You own the following monopolies:" << endl;
+				for (unsigned int i = 0; i<size; i++)
+				{
+					if (property[i].getMonopoly() == true && property[i].getOwnedBy() == playerToken)
+					{
+						cout << "[" << property[i].getMonopolyGroup() << "] " << property[i].getPropertyName() << endl;
+					}
+				}
+			}
+			cout << endl << endl;
+		}//end while loop of END TURN OPTIONS
+	}//end while loop of game
 
 	cout << "The game has ended..." << endl;
 
