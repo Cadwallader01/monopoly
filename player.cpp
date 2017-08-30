@@ -18,8 +18,9 @@ player::player()
 	railroadCount = 0;
 	jailBail = 3;	//starts at 3 and works it's way down to 0
 	jailTime = 0;
+	jailCard = 0;
 }
-player::player(int p, int t, string n, int m, int u, int rail, int jB, bool jT)
+player::player(int p, int t, string n, int m, int u, int rail, int jB, bool jT, bool jC)
 {
 	position = p;
 	token = t;
@@ -29,6 +30,7 @@ player::player(int p, int t, string n, int m, int u, int rail, int jB, bool jT)
 	railroadCount = rail;
 	jailBail = jB;
 	jailTime = jT;
+	jailCard = jC;
 }
 void player::setPosition(int p)
 {
@@ -99,6 +101,14 @@ bool player::getjailTime()
 {
 	return jailTime;
 }
+void player::setJailCard(bool j)
+{
+	jailCard = j;
+}
+bool player::getJailCard()
+{
+	return jailCard;
+}
 
 //function to make a player
 void makePlayer(vector<player>& players)
@@ -113,8 +123,8 @@ void makePlayer(vector<player>& players)
 	{
 		cout << "What is name of player " << i+1 << "? ";
 		cin >> name;
-		//player(playerPosition, playerToken, playerName, playerMoney, utilityCount, railroadCount, jailBail, jailTime)
-		players.push_back(player(playerPosition, playerToken, name, 1500, 0, 0, 3, false));
+		//player(playerPosition, playerToken, playerName, playerMoney, utilityCount, railroadCount, jailBail, jailTime, jailCard)
+		players.push_back(player(playerPosition, playerToken, name, 1500, 0, 0, 3, false, false));
 		playerToken++;
 	}
 }
@@ -156,12 +166,12 @@ bool checkMonopoly(int square, int currentPlayer, vector<player>& players, vecto
 	bool monopoly = false;
 	int monopolyTally = 0;
 	int playerToken = players[currentPlayer].getToken();
-	int monopolyGroup = properties[square].getMonopoly();
+	int monopolyGroup = properties[square].getMonopolyGroup();
 	unsigned int size = properties.size();
 	//collect how many squares make up that current monopolyGroup
 	for (unsigned int i = 0; i<size; i++)
 	{
-		if (properties[i].getMonopoly() == monopolyGroup)
+		if (properties[i].getMonopolyGroup() == monopolyGroup)
 		{
 			monopolyTally++;
 		}
@@ -170,7 +180,7 @@ bool checkMonopoly(int square, int currentPlayer, vector<player>& players, vecto
 	//make sure the player owns the same amount of squares in that monopolyGroup
 	for (unsigned int i = 0; i<size; i++)
 	{
-		if (properties[i].getMonopoly() == monopolyGroup)
+		if (properties[i].getMonopolyGroup() == monopolyGroup)
 		{
 			//if player owns that square then monopolyTally--
 			if (players[currentPlayer].getToken() == properties[i].getOwnedBy())
@@ -183,6 +193,14 @@ bool checkMonopoly(int square, int currentPlayer, vector<player>& players, vecto
 	if (monopolyTally == 0)
 	{
 		monopoly = true;
+		//turn monopoly variable of property to true if it is part of a monopoly
+		for (unsigned int i = 0; i<size; i++)
+		{
+			if (properties[i].getMonopolyGroup() == monopolyGroup)
+			{
+				properties[i].setMonopoly(true);
+			}
+		}
 	}
 	else if (monopolyTally > 0)
 	{
@@ -199,7 +217,7 @@ void makePurchase(int space, int currentPlayer, vector<property>& properties, ve
 	bool monopolyMade = false;
 	int monopolyTally = 0;
 	unsigned int size = properties.size();
-	int monopolyGroup = properties[space].getMonopoly();
+	int monopolyGroup = properties[space].getMonopolyGroup();
 	int playerToken = -1;
 	//if square is not owned ask player if they'd like to make a purchase
 	if (properties[space].getOwnedBy() == -1)
@@ -223,7 +241,7 @@ void makePurchase(int space, int currentPlayer, vector<property>& properties, ve
 				cout << "You own a monopoly! with these squares: " <<endl;
 				for (unsigned int i = 0; i<size; i++)
 				{
-					if (properties[i].getMonopoly() == monopolyGroup)
+					if (properties[i].getMonopolyGroup() == monopolyGroup)
 					{
 						cout << properties[i].getPropertyName() << endl;
 					}
