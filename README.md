@@ -1,2 +1,2 @@
 # monopoly
-Working on building a version of Monopoly during my spare time in C++.
+Monopoly on terminal during my spare time in C++.
